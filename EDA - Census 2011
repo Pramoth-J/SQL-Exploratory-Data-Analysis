@@ -1,0 +1,55 @@
+SELECT 	COUNT (*) FROM eda_1
+SELECT COUNT (*) FROM eda_2
+
+SELECT * FROM eda_1
+WHERE district IN ('Coimbatore','Meerut')
+
+SELECT * FROM eda_2
+WHERE state = 'Gujarat'
+
+SELECT * FROM eda_1
+WHERE State LIKE 'A%'
+
+SELECT * FROM eda_2
+WHERE district ILIKE '%P'
+
+SELECT SUM(population) AS total_population FROM eda_2
+
+SELECT SUM(area_km) AS total_area FROM eda_2
+
+SELECT  AVG(growth) * 100 AS average_growth FROM eda_1
+
+SELECT AVG(sex_ratio) * 100 AS avg_sex_ratio FROM eda_1
+
+SELECT AVG(literacy) * 100 AS avg_literacy FROM eda_1
+
+
+SELECT state, SUM(population) AS population FROM eda_2
+GROUP BY state
+ORDER BY population DESC
+
+
+SELECT state , avg(growth) * 100 AS avg_growth FROM eda_1
+GROUP BY state
+ORDER BY avg_growth DESC
+
+SELECT state , AVG(sex_ratio) * 100 AS avg_sex_ratio FROM eda_1
+GROUP BY state
+ORDER BY avg_sex_ratio DESC 
+
+SELECT state ,AVG(literacy) * 100 AS avg_literacy FROM eda_1
+GROUP BY state
+HAVING avg(literacy) > 90
+ORDER BY avg_literacy DESC 
+
+SELECT d.district,d.state,d.literacy_ratio * d.population AS literate_people,(1-d.literacy_ratio)* d.population AS illiterate_people  FROM 
+(Select eda_1.district,eda_1.state, literacy/100 AS literacy_ratio ,population FROM eda_1
+INNER JOIN eda_2
+ON eda_1.district = eda_2.district)AS d
+
+(SELECT c.state, SUM(literate_people)AS total_literate_people,SUM(illiterate_people) AS total_illiterate_people FROM
+(SELECT d.district,d.state,d.literacy_ratio * d.population AS literate_people,(1-d.literacy_ratio)* d.population AS illiterate_people  FROM 
+(Select eda_1.district,eda_1.state, literacy/100 AS literacy_ratio ,population FROM eda_1
+INNER JOIN eda_2
+ON eda_1.district = eda_2.district)AS d )AS C
+GROUP BY c.state) 
